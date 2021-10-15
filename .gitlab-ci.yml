@@ -1,0 +1,31 @@
+before_script:
+  - docker info
+
+stages:
+  - build
+  - push
+  - deploy
+
+build_job:
+  stage: build
+  tags:
+    - oma-runner
+  script:
+    - docker image build -t portfolio .
+
+push_job:
+  stage: push
+  tags:
+    - oma-runner
+  script:
+    - gcloud auth configure-docker
+    - docker image tag portfolio eu.gcr.io/portfolio/portfolio:latest
+    - docker image push eu.gcr.io/portfolio/portfolio:latest
+    
+deploy_job:
+  stage: deploy
+  tags:
+    - oma-runner
+  script:
+    - cd ansible
+    - ansible-playbook -i inventory.gcp.yml main.yml
