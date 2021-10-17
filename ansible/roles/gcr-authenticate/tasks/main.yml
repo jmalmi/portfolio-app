@@ -1,0 +1,11 @@
+- name: Get GCR token
+  become: false
+  shell: /snap/bin/gcloud auth print-access-token
+  register: gcr_token
+
+- name: Login to GCR
+  docker_login:
+    username: oauth2accesstoken
+    password: "{{ gcr_token.stdout }}"
+    registry_url: eu.gcr.io
+

@@ -1,6 +1,8 @@
 - name: Run Portfolio container
   become: true
   hosts: localhost
+  roles:
+    - gcr-authenticate
   tasks:
     - name: Start Portfolio
       service:
