@@ -1,35 +1,31 @@
+before_script:
+  - docker info
+
 stages:
-  - build_image
-  - deploy_container
-  - delete_image
+  - build
+  - push
+  - deploy
 
-build-image:
-  stage: build_image
+build_job:
+  stage: build
+  tags:
+    - oma-runner
+  script:
+    - docker image build -t portfolio .
+
+push_job:
+  stage: push
   tags:
     - portfolio-runner
   script:
-    - IMAGENAME=portfolio
-    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD)
-    - docker image build -t $VERSIONED_IMAGENAME .
-    - docker image tag $VERSIONED_IMAGENAME $IMAGENAME:latest
-    - docker image ls
-
-deploy-containers:
-  stage: deploy_container
+    - gcloud auth configure-docker
+    - docker image tag portfolio eu.gcr.io/portfolio/portfolio
+    - docker image push eu.gcr.io/portfolio/portfolio
+    
+deploy_job:
+  stage: deploy
   tags:
     - portfolio-runner
   script:
-    - docker container stop portfolio-container
-    - docker container rm portfolio-container
-    - docker run -d -p 3000:3000 --name portfolio-container portfolio
-
-delete-image:
-  stage: delete_image
-  tags:
-    - portfolio-runner
-  script:
-    - IMAGENAME=portfolio
-    # Delete image built five commits ago to leave five newest images
-    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD~5)
-    - docker image rm $VERSIONED_IMAGENAME || echo "Failed to delete"
-
+    - cd ansible
+    - ansible-playbook -i main.yml
