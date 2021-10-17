@@ -1,22 +1,35 @@
-before_script:
-  - docker info
-
 stages:
-  - build
-  - push
-  - deploy
+  - build_image
+  - deploy_container
+  - delete_image
 
-build_job:
-  stage: build
+build-image:
+  stage: build_image
   tags:
     - portfolio-runner
   script:
-    - docker image build -t portfolio .
-    
-deploy_job:
-  stage: deploy
+    - IMAGENAME=portfolio
+    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD)
+    - docker image build -t $VERSIONED_IMAGENAME .
+    - docker image tag $VERSIONED_IMAGENAME $IMAGENAME:latest
+    - docker image ls
+
+deploy-containers:
+  stage: deploy_container
   tags:
     - portfolio-runner
   script:
-    - cd ansible
-    - ansible-playbook -i inventory main.yml
+    - docker container stop portfolio
+    - docker container rm portfolio
+    - docker run -d --net conduit-net -p 80:3000 --name portfolio portfolio
+
+delete-image:
+  stage: delete_image
+  tags:
+    - portfolio-runner
+  script:
+    - IMAGENAME=portfolio
+    # Delete image built five commits ago to leave five newest images
+    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD~5)
+    - docker image rm $VERSIONED_IMAGENAME || echo "Failed to delete"
+
