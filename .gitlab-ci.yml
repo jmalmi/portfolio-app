@@ -1,10 +1,10 @@
 stages:
-  - build_image
-  - deploy_container
-  - delete_image
+  - build
+  - deploy
+  - delete
 
 build-image:
-  stage: build_image
+  stage: build
   tags:
     - portfolio-runner
   script:
@@ -15,16 +15,16 @@ build-image:
     - docker image ls
 
 deploy-containers:
-  stage: deploy_container
+  stage: deploy
   tags:
     - portfolio-runner
   script:
     - docker container stop portfolio
     - docker container rm portfolio
-    - docker run -d --net conduit-net -p 80:3000 --name portfolio portfolio
+    - docker run -d -p 80:3000 --name portfolio portfolio
 
 delete-image:
-  stage: delete_image
+  stage: delete
   tags:
     - portfolio-runner
   script:
