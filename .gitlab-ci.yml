@@ -19,4 +19,4 @@ deploy_job:
     - portfolio-runner
   script:
     - cd ansible
-    - ansible-playbook -i inventory main.yml
+    - ansible-playbook -i inventory main.yml -vvvv
