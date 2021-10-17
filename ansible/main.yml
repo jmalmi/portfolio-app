@@ -2,6 +2,7 @@
 # start portfolio container
 - name: Portfolio container
   become: true
+  hosts: frontend
   tasks:
     - name: Run Portfolio
       docker_container:
