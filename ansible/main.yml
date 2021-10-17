@@ -1,4 +1,8 @@
- # DEPLOYMENTS
+             
+# start portfolio container
+- name: Portfolio container
+  become: true
+  tasks:
     - name: Run Portfolio
       docker_container:
         name: portfolio
