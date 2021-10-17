@@ -1,15 +1,13 @@
-             
-# start portfolio container
 - name: Portfolio container
-  become: true
   hosts: frontend
+  become: true
   tasks:
-    - name: Run Portfolio
-      docker_container:
+    - name: Start Portfolio
+      service:
         name: portfolio
-        image: portfolio
         ports:
           - "80:3000"
+        state: started
 
 
 
