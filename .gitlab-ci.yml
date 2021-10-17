@@ -9,14 +9,14 @@ stages:
 build_job:
   stage: build
   tags:
-    - oma-runner
+    - portfolio-runner
   script:
     - docker image build -t portfolio .
 
 push_job:
   stage: push
   tags:
-    - oma-runner
+    - portfolio-runner
   script:
     - gcloud auth configure-docker
     - docker image tag portfolio eu.gcr.io/portfolio/portfolio
@@ -25,7 +25,7 @@ push_job:
 deploy_job:
   stage: deploy
   tags:
-    - oma-runner
+    - portfolio-runner
   script:
     - cd ansible
     - ansible-playbook -i inventory.gcp.yml main.yml
