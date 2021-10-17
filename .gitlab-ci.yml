@@ -9,7 +9,7 @@ stages:
 build_job:
   stage: build
   tags:
-    - oma-runner
+    - portfolio-runner
   script:
     - docker image build -t portfolio .
 
