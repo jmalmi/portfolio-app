@@ -13,15 +13,6 @@ build_job:
   script:
     - docker image build -t portfolio .
 
-push_job:
-  stage: push
-  tags:
-    - portfolio-runner
-  script:
-    - gcloud auth configure-docker
-    - docker image tag portfolio eu.gcr.io/portfolio-329113/portfolio
-    - docker image push eu.gcr.io/portfolio-329113/portfolio
-    
 deploy_job:
   stage: deploy
   tags:
