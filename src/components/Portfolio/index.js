@@ -6,6 +6,8 @@ import Icon3 from '../../images/img3.png'
 import Icon4 from '../../images/img6.png'
 import Icon5 from '../../images/img4.png'
 import Icon6 from '../../images/img5.png'
+import Icon7 from '../../images/img7.png'
+
 
 
 
@@ -16,6 +18,11 @@ const Portfolio = () => {
         <PortfolioContainer id="portfolio">
             <PortfolioH1>Portfolio</PortfolioH1>
             <PortfolioWrapper>
+                <PortfolioCard onClick={() => window.open('https://gitlab.com/jonimalmivaara')}>
+                    <PortfolioIcon src={Icon7} />
+                    <PortfolioH2>Gitlab reponi</PortfolioH2>
+                    <PortfolioP>Täältä löydät eri projektieni lähdekoodeja</PortfolioP>
+                </PortfolioCard>
                 <PortfolioCard onClick={() => window.open('https://student.labranet.jamk.fi/~AB5141/portfolio')}>
                     <PortfolioIcon src={Icon1} />
                     <PortfolioH2>Tämä Sivusto</PortfolioH2>
