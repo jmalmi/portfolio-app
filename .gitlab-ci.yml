@@ -1,0 +1,35 @@
+stages:
+  - build
+  - deploy
+  - delete
+
+build-image:
+  stage: build
+  tags:
+    - portfolio-runner
+  script:
+    - IMAGENAME=portfolio
+    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD)
+    - docker image build -t $VERSIONED_IMAGENAME .
+    - docker image tag $VERSIONED_IMAGENAME $IMAGENAME:latest
+    - docker image ls
+
+deploy-containers:
+  stage: deploy
+  tags:
+    - portfolio-runner
+  script:
+    - docker container stop portfolio
+    - docker container rm portfolio
+    - docker run -d -p 80:3000 --name portfolio portfolio
+
+delete-image:
+  stage: delete
+  tags:
+    - portfolio-runner
+  script:
+    - IMAGENAME=portfolio
+    # Delete image built five commits ago to leave five newest images
+    - VERSIONED_IMAGENAME=$IMAGENAME:$(git rev-parse HEAD~5)
+    - docker image rm $VERSIONED_IMAGENAME || echo "Failed to delete"
+
